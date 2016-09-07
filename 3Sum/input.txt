@@ -1,0 +1,21 @@
+DFS
+Adams
+Jeniffer
+Adams Coop 2
+Adams Mary 6
+Adams Duck 3
+Adams DFA 5
+Mary Coop 3
+Mary Adams 6
+Mary Jeniffer 4
+Downing Jeniffer 2
+Downing Coop 4
+Downing DFA 3
+Coop Adams 2
+Coop Mary 3
+Coop Downing 4
+DFA Downing 3
+DFA Duck 1
+DFA Adams 5
+Duck Adams 3
+Duck DFA 1
