@@ -19,8 +19,9 @@ public:
     int n;
     int hops = 0;
     multimap<string, string> tree;
-    multimap<vector<string>, string> graph;
+    map<vector<string>, string> graph;
     map<string, int> visited;
+    map<string, string> Distance;
 
     void dfs(string v, string desti)
     {
@@ -123,7 +124,7 @@ public:
         string NextPoi;
         
         map<string,string> LastRoute;
-        multimap<vector<string>, string>::iterator it;
+        map<vector<string>, string>::iterator it;
         multimap<string, string>::iterator it1;
         
         vector<vector<string>> queue;
@@ -144,6 +145,11 @@ public:
             flag ++;
             it1 = tree.find(start);
             n = tree.count(start);
+            
+            if (n < 3) {
+                flag = 0;
+            }
+            
             for (i = 0; i < n ; i++){
                 NextPoi = it1 -> second;
                 
@@ -198,7 +204,7 @@ public:
                 
 
                 route.clear();
-                it++;
+                //it++;
                 it1++;
             }
             sort(queue.begin(), queue.end());
@@ -227,6 +233,44 @@ public:
              OrigStart.pop_back();
         }
        
+    }
+    
+    struct Node{
+        Node *parent;
+        string f,g,h;
+    };
+    
+    void Asearch(string start, string destination){
+        string2int toint = *new string2int();
+        vector<string> Currstart;
+        int n = 0, i;
+        Node startnode, nextp;
+        startnode.g = "0";
+        startnode.h = Distance[start];
+        startnode.f = to_string(toint.Toint(startnode.g) + toint.Toint(startnode.h));
+        vector<vector<string>> queue;
+        map<string,string>::iterator it;
+        Currstart.push_back("0");
+        Currstart.push_back(start);
+        queue.push_back(Currstart);
+        Currstart.clear();
+        
+        while (queue.empty()) {
+            it = tree.find(queue[0][1]);
+            n = tree.count(queue[0][1]);
+            queue.erase(queue.begin());
+            for (i = 0; i < n; i++) {
+                Currstart.push_back(queue[0][1]);
+                Currstart.push_back(it -> second);
+                
+                nextp.h = Distance[it->second];
+                nextp.g = graph[Currstart];
+                nextp.parent = &startnode;
+                Currstart.clear();
+            }
+        }
+        
+        
     }
 
 };

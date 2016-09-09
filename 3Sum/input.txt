@@ -1,21 +1,21 @@
-DFS
-Adams
-Jeniffer
-Adams Coop 2
-Adams Mary 6
-Adams Duck 3
-Adams DFA 5
-Mary Coop 3
-Mary Adams 6
-Mary Jeniffer 4
+UCS
+DFA
+Mary/10
+Adams/105 Coop/100 2
+Adams/105 Mary/10 6
+Adams/105 Duck 3
+Adams/105 DFA 5
+Mary/10 Coop/100 3
+Mary/10 Adams/105 6
+Mary/10 Jeniffer 4
 Downing Jeniffer 2
-Downing Coop 4
+Downing Coop/100 4
 Downing DFA 3
-Coop Adams 2
-Coop Mary 3
-Coop Downing 4
+Coop/100 Adams/105 2
+Coop/100 Mary/10 3
+Coop/100 Downing 4
 DFA Downing 3
 DFA Duck 1
-DFA Adams 5
-Duck Adams 3
+DFA Adams/105 5
+Duck Adams/105 3
 Duck DFA 1

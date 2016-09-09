@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     
-    iinfo.getline(buffer, 50);
+    iinfo.getline(buffer, 10);
 
    
     
@@ -74,6 +74,16 @@ int main(int argc, const char * argv[]) {
             Info.desti.push_back(a);
         }
     }
+    while (!iinfo.eof()) {
+        char a = iinfo.get();
+        if (a == '\n') {
+            break;
+        }
+        else{
+            string Numroute;
+            Numroute.push_back(a);
+        }
+    }
     //////////////////////////////////////////////////////////
     //     Read the Begin Point and the Desination  <End>   //
     //////////////////////////////////////////////////////////
@@ -84,28 +94,38 @@ int main(int argc, const char * argv[]) {
     //////////////////////////////////////////////////////////
     int flag = 0;
     
-    while (!iinfo.eof() )
+    while (!iinfo.eof() && flag != 4)
     {
         
         char a = iinfo.get();
-        if(a != ' ' && a != '\n' &&( a < 48 || a > 57)){
+        if(a != ' ' && a != '\n' && flag < 2){
             il.push_back(a);
             
         }
         
-        else if (48 < a && a< 57){
+        else if (47 < a && a< 58 && flag == 2){
             cost.push_back(a);
-            flag++;
         }
 
         else if (a == '\n') {
-            if (place.size()) {
-                Dsearch.graph.insert(pair<vector<string>,string>(place, cost) );
+            if (place.size() == 2) {
+                Dsearch.graph[place] = cost;
                 Dsearch.tree.insert(pair<string, string>(place[0],place[1]));
+                Dsearch.tree.insert(pair<string, string>(place[1],place[0]));
+                place.push_back(place[0]);
+                place.erase(place.begin());
+                if (!Dsearch.graph.count(place)) {
+                    Dsearch.graph[place] =  cost;
+                }
                 il.clear();
                 place.clear();
                 cost.clear();
                 flag = 0;
+            }
+            else if (place.size() == 0){
+                flag = 4;
+                il.clear();
+                //Erase the number of route on Sunday. I may come back one day I know where this can be used.
             }
             
         }
@@ -128,33 +148,72 @@ int main(int argc, const char * argv[]) {
             cost.clear();
 
     }
-    //sort(Dsearch.graph.begin(), Dsearch.graph.end());
     //////////////////////////////////////////////////////////
     //      Read the intersection information  <End>        //
     //////////////////////////////////////////////////////////
+    flag = 0;
     
+    while (!iinfo.eof())
+    {
+        
+        char a = iinfo.get();
+        if(a != ' ' && a != '\n' && flag < 1){
+            il.push_back(a);
+            
+        }
+        
+        else if (47 < a && a< 58 && flag == 1){
+            cost.push_back(a);
+        }
+        
+        else if (a == '\n') {
+                Dsearch.Distance[il] = cost;
+                il.clear();
+                place.clear();
+                cost.clear();
+                flag = 0;
+            
+        }
+        else if (a == ' '){
+            
+                flag++;
+            
+        }
+        
+    }
+
+    if (il.size()) {
+        Dsearch.Distance[il] = cost;
+        il.clear();
+        place.clear();
+        cost.clear();
+        
+    }
+
     
     if (buffer[0] == 'D') {
         cout << "result for dfs:" << endl;
-        cout << Info.beginpoi << endl;
-        cout << Info.desti << endl;
+        cout << "From" << Info.beginpoi << endl;
+        cout << "To" << Info.desti << endl;
         Dsearch.dfs(Info.beginpoi,Info.desti);
     }
     else if(buffer[0] == 'B'){
-        cout << "result for dfs:" << endl;
-        cout << Info.beginpoi << endl;
-        cout << Info.desti << endl;
+        cout << "result for bfs:" << endl;
+        cout << "From" << Info.beginpoi << endl;
+        cout << "To" << Info.desti << endl;
         Dsearch.bfs(Info.beginpoi,Info.desti);
     }
     else if (buffer[0] == 'U'){
-        cout << "result for dfs:" << endl;
-        cout << Info.beginpoi << endl;
-        cout << Info.desti << endl;
+        cout << "result for Uniform Search:" << endl;
+        cout << "From" << Info.beginpoi << endl;
+        cout << "To" << Info.desti << endl;
         Dsearch.UniformSearch(Info.beginpoi,Info.desti);
     }
-    else{
-        cout << Info.beginpoi << endl;
-        cout << Info.desti << endl;
+    else if (buffer[0] == 'A'){
+        cout << "result for Uniform Search:" << endl;
+        cout << "From" << Info.beginpoi << endl;
+        cout << "To" << Info.desti << endl;
+        Dsearch.Asearch(Info.beginpoi, Info.desti);
     }
 
     
