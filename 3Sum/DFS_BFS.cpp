@@ -28,7 +28,7 @@ public:
     void dfs(string v, string desti)
     {
         ofstream ofile;
-        ofile.open("output.txt");
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -69,7 +69,7 @@ public:
     void bfs(string v, string desti)
     {
         ofstream ofile;
-        ofile.open("output.txt");
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -128,7 +128,7 @@ public:
     
     void UniformSearch(string start, string destination){
         ofstream ofile;
-        ofile.open("output.txt");
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -263,7 +263,7 @@ public:
     
     void Asearch(string start, string destination){
         ofstream ofile;
-        ofile.open("output.txt");
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -280,6 +280,7 @@ public:
         map<string,string>::iterator it;
         Currstart.push_back("0");
         Currstart.push_back(start);
+        Currstart.push_back("0");
         queue.push_back(Currstart);
         Currstart.clear();
         int k = 0, m = 0;
@@ -300,9 +301,10 @@ public:
                     
                     if (flag == 0) {
                         nextp[i].parent = &startnode;
-                        flag ++;
+                        
                     }
                     else{
+                 
                         nextp[i].parent = &nextp[toint.Toint(queue[0][2])];
 
                     }
@@ -320,7 +322,7 @@ public:
                     k++;
                     it++;
                 }
-                
+                flag ++;
                 visited[queue[0][1]] = 1;
                 m = k;
 
@@ -330,8 +332,9 @@ public:
             
         }
         Currstart.clear();
-        queue.clear();
         tmp = nextp[toint.Toint(queue[0][2])];
+        queue.clear();
+
         while (tmp.parent) {
             Currstart.push_back(tmp.name);
             Currstart.push_back(tmp.f);
@@ -343,7 +346,9 @@ public:
         Currstart.push_back(tmp.f);
         queue.push_back(Currstart);
         while (queue.size()) {
-            ofile << queue[queue.size() - 1][0] << " " << queue[queue.size() - 1][1] << endl;
+            int dis = toint.Toint(queue[queue.size() - 1][1])-toint.Toint(Distance[queue[queue.size() - 1][0]]);
+            ofile << queue[queue.size() - 1][0] << " " << dis << endl;
+            cout << queue[queue.size() - 1][0] << " " << dis << endl;
             queue.pop_back();
         }
         

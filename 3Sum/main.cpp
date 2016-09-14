@@ -36,7 +36,7 @@ int main(int argc, const char * argv[]) {
     //////////////////////////
     //  DFS & BFS Algorithm //
     //////////////////////////
-    char buffer[100];
+    char buffer[5];
     string il;
     string cost;
     vector<string> place;
@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
     ifstream iinfo;
     info Info = *new info();
     
-    iinfo.open("input.txt");
+    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input1.txt");
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     
@@ -210,7 +210,18 @@ int main(int argc, const char * argv[]) {
         Dsearch.UniformSearch(Info.beginpoi,Info.desti);
     }
     else if (buffer[0] == 'A'){
-        cout << "result for Uniform Search:" << endl;
+        cout << "result for A* Search:" << endl;
+        int i = 0;
+        map<string,string> ::iterator it1 = Dsearch.Distance.begin();
+
+        while (i < Dsearch.Distance.size() ) {
+            cout << it1->first[0] << " " ;
+            cout << it1->first[1] << " " ;
+            cout << it1->second << endl;
+            it1++;
+            i++;
+        }
+        
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
         Dsearch.Asearch(Info.beginpoi, Info.desti);

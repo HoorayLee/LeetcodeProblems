@@ -11,6 +11,7 @@
 #include<vector>
 #include<map>
 #include <iostream>
+#include <algorithm>
 #include <stdio.h>
 
 #endif /* Grid2D_hpp */
