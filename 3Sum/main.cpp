@@ -8,7 +8,7 @@
 
 //#include "Grid2D.cpp"
 //#include "Grid2D.hpp"
-//#include "3Sum.cpp"
+#include "3Sum.cpp"
 #include "DFS_BFS.cpp"
 #include <fstream>
 //#include "Add2Int.cpp"
@@ -28,9 +28,9 @@ int main(int argc, const char * argv[]) {
     
     //3 Sum Question
 //    Solution Solute = *new Solution();
-//    vector<int> A = {-4,-2,-2,-2,0,1,2,2,2,3,3,4,4,6,6};
+//    vector<int> A = {14,-11,-2,-3,4,-3,-3,-8,-15,11,11,-6,-14,-13,5,-10,-13,0,-12,-8,14,-12,-10,2,-4,9,13,10,2,7,-2,-7,4,11,5,-7,-15,10,-7,-14,6,11,-5,7,6,8,5,8,-7,8,-15,14,11,13,1,-15,7,0,10,-14,14,-15,-14,3,4,6,4,4,-7,12,5,14,0,8,7,13,1,-11,-2,9,12,-1,8,0,-11,-5,0,11,2,-13,4,1,-12,5,-10,-1,-12,9,-12,-11,-2,9,-12,5,-6,2,4,10,6,-13,4,3,-7,-11,11,-3,-9,-4,-15,8,-9,-4,-13,-14,8,14};
 //    vector<vector<int>> SolutionSet = Solute.threeSum(A);
-//
+
 
     
     //////////////////////////
@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
     ifstream iinfo;
     info Info = *new info();
     
-    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input1.txt");
+    iinfo.open("input.txt");
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     

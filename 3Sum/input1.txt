@@ -1,4 +1,4 @@
-UCS
+A*
 JordanHome
 StaplesCenter
 5
@@ -13,4 +13,9 @@ I10/I110 StaplesCenter 3
 5
 JordanHome 60
 CA73/NewportCoastDr 55
+I405/CA73 30
+I110/I405 32
+I10/I110 40
+I10/I405 20
+I105/I110 15
 StaplesCenter 0

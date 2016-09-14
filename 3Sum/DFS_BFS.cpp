@@ -6,6 +6,7 @@
 //  Copyright © 2016年 洪锐 李. All rights reserved.
 //
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <list>
 #include <vector>
@@ -22,9 +23,16 @@ public:
     map<vector<string>, string> graph;
     map<string, int> visited;
     map<string, string> Distance;
-
+    
+    
     void dfs(string v, string desti)
     {
+        ofstream ofile;
+        ofile.open("output.txt");
+        if (! ofile.is_open())
+        { cout << "Error opening file"; exit (1); }
+        
+        
         int i = 0;
         string NextPoi;
         multimap<string,string>::iterator it;
@@ -32,7 +40,7 @@ public:
         it = tree.find(v);
         NextPoi = it -> second;
         visited[v] = 1;
-        printf("%s\t\t%d\n", v.c_str(), hops);
+        ofile<<v.c_str() << " " << hops <<endl;
         hops++;
 
         n = tree.count(NextPoi);
@@ -42,7 +50,7 @@ public:
         }
         i = 0;
         if (NextPoi ==  desti) {
-            printf("%s\t%d",NextPoi.c_str(),hops);
+            ofile << NextPoi.c_str() << " " << hops << endl;
             exit(0);
         }
         sort(sorted.begin(),sorted.end());
@@ -60,6 +68,12 @@ public:
 
     void bfs(string v, string desti)
     {
+        ofstream ofile;
+        ofile.open("output.txt");
+        if (! ofile.is_open())
+        { cout << "Error opening file"; exit (1); }
+        
+        
         int i = 0;
         string NextPoi;
         multimap<string,string>::iterator it;
@@ -67,7 +81,7 @@ public:
         vector<string> sorted;
         visited[v] = 1;
         int flag = 0;
-        printf("%s\t\t%d\n", v.c_str(), hops);
+        ofile<<v.c_str() << " " << hops <<endl;
         hops++;
         queue<string> t;
         t.push(v);
@@ -90,13 +104,13 @@ public:
             for (i = 0; i < n ; i++){
                  NextPoi = sorted[i];
                 if(NextPoi == desti){
-                    printf("%s\t\t%d\n", NextPoi.c_str(), hops);
+                    ofile << NextPoi.c_str() << " " << hops << endl;
                     exit(0);
                 }
 
                 if (!visited.count(NextPoi))
                 {
-                    printf("%s\t\t%d\n", NextPoi.c_str(), hops);
+                    ofile << NextPoi.c_str() << " " << hops << endl;
                     t.push(NextPoi);
                     visited[NextPoi] = true;
                     flag++;
@@ -113,6 +127,12 @@ public:
     }
     
     void UniformSearch(string start, string destination){
+        ofstream ofile;
+        ofile.open("output.txt");
+        if (! ofile.is_open())
+        { cout << "Error opening file"; exit (1); }
+        
+        
         int i = 0;
         int i1 = 0;
         int flag = 0;
@@ -136,7 +156,7 @@ public:
         string2int toint = *new string2int();
         
         visited[start] = 1;
-        printf("%s\t%d\n", start.c_str(), hops);
+        ofile << start.c_str() << " " << hops << endl;
         OrigStart.push_back(start);
         BestRoute.push_back(destination);
         
@@ -226,10 +246,10 @@ public:
             CurrStart.clear();
             queue.erase(queue.begin());
         }
-        cout << BestRoute[BestRoute.size() - 1] << "\t\t" <<"0" << endl;
+        ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
         for (i = 2; i < BestRoute.size() + 1; i++) {
              OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
-             cout << BestRoute[BestRoute.size() - i] << "\t\t" <<graph.find(OrigStart)->second << endl;
+             ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
              OrigStart.pop_back();
         }
        
@@ -238,15 +258,23 @@ public:
     struct Node{
         Node *parent;
         string f,g,h;
+        string name;
     };
     
     void Asearch(string start, string destination){
+        ofstream ofile;
+        ofile.open("output.txt");
+        if (! ofile.is_open())
+        { cout << "Error opening file"; exit (1); }
+        
+        
         string2int toint = *new string2int();
         vector<string> Currstart;
         int n = 0, i;
-        Node startnode, nextp;
+        Node startnode, nextp[1000] ,tmp;
         startnode.g = "0";
         startnode.h = Distance[start];
+        startnode.name = start;
         startnode.f = to_string(toint.Toint(startnode.g) + toint.Toint(startnode.h));
         vector<vector<string>> queue;
         map<string,string>::iterator it;
@@ -254,22 +282,70 @@ public:
         Currstart.push_back(start);
         queue.push_back(Currstart);
         Currstart.clear();
+        int k = 0, m = 0;
+        int flag = 0;
         
-        while (queue.empty()) {
+        while (!queue.empty()) {
+            if (queue[0][1] == destination) {
+                cout << "Destination has arrived"<< endl;
+                break;
+            }
             it = tree.find(queue[0][1]);
             n = tree.count(queue[0][1]);
-            queue.erase(queue.begin());
-            for (i = 0; i < n; i++) {
-                Currstart.push_back(queue[0][1]);
-                Currstart.push_back(it -> second);
+            
+            if (!visited[queue[0][1]]) {
+                for (i = m; i < n + m; i++) {
+                    Currstart.push_back(queue[0][1]);
+                    Currstart.push_back(it -> second);
+                    
+                    if (flag == 0) {
+                        nextp[i].parent = &startnode;
+                        flag ++;
+                    }
+                    else{
+                        nextp[i].parent = &nextp[toint.Toint(queue[0][2])];
+
+                    }
+                    nextp[i].h = Distance[it->second];
+                    nextp[i].g = to_string(toint.Toint(graph[Currstart]) + toint.Toint(nextp[i].parent->g));
+                    nextp[i].f = to_string(toint.Toint(nextp[i].g) + toint.Toint(nextp[i].h));
+                    nextp[i].name = it->second;
+                    Currstart.clear();
+                    
+                    Currstart.push_back(nextp[i].f);
+                    Currstart.push_back(nextp[i].name);
+                    Currstart.push_back(to_string(k));
+                    queue.push_back(Currstart);
+                    Currstart.clear();
+                    k++;
+                    it++;
+                }
                 
-                nextp.h = Distance[it->second];
-                nextp.g = graph[Currstart];
-                nextp.parent = &startnode;
-                Currstart.clear();
+                visited[queue[0][1]] = 1;
+                m = k;
+
             }
+            queue.erase(queue.begin());
+            sort(queue.begin(), queue.end());
+            
         }
-        
+        Currstart.clear();
+        queue.clear();
+        tmp = nextp[toint.Toint(queue[0][2])];
+        while (tmp.parent) {
+            Currstart.push_back(tmp.name);
+            Currstart.push_back(tmp.f);
+            tmp = *tmp.parent;
+            queue.push_back(Currstart);
+            Currstart.clear();
+        }
+        Currstart.push_back(tmp.name);
+        Currstart.push_back(tmp.f);
+        queue.push_back(Currstart);
+        while (queue.size()) {
+            ofile << queue[queue.size() - 1][0] << " " << queue[queue.size() - 1][1] << endl;
+            queue.pop_back();
+        }
         
     }
 
