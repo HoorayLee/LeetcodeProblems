@@ -126,6 +126,19 @@ public:
         }
     }
     
+    void checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
+        if (NextPoi == destination) {
+            BestRoute->clear();
+            BestRoute->push_back(NextPoi);
+            cout << "Destination has arrived" << endl;
+            while (LastRoute[NextPoi] != OrigStart[0]) {
+                BestRoute->push_back(LastRoute[NextPoi]);
+                NextPoi = LastRoute[NextPoi];
+            }
+            BestRoute->push_back(OrigStart[0]);
+        }
+    }
+    
     void UniformSearch(string start, string destination){
         ofstream ofile;
         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
@@ -156,7 +169,7 @@ public:
         string2int toint = *new string2int();
         
         visited[start] = 1;
-        ofile << start.c_str() << " " << hops << endl;
+        //ofile << start.c_str() << " " << hops << endl;
         OrigStart.push_back(start);
         BestRoute.push_back(destination);
         
@@ -191,6 +204,7 @@ public:
                     test.clear();
                     LastRoute[NextPoi] = start;
                     visited[NextPoi] = true;
+                    checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
                 }
 
                 else if (visited.count(NextPoi) && NextPoi != OrigStart[0]){
@@ -207,6 +221,9 @@ public:
                             i1 = 0;
                             LastRoute[NextPoi] = start;
                             printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
+                            checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
+                            
+
                         }
                     }
                 }
@@ -215,6 +232,8 @@ public:
                     graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(it -> second)) ));
                     LastRoute[NextPoi] = start;
                     printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(it -> second));
+                    checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
+
                     }
                     
                 if (OrigStart.size() == 2) {
@@ -229,22 +248,18 @@ public:
             }
             sort(queue.begin(), queue.end());
             start = queue[0][1];
-            if (start == destination) {
-                cout << "Destination has arrived" << endl;
-                while (LastRoute[start] != OrigStart[0]) {
-                    BestRoute.push_back(LastRoute[start]);
-                    start = LastRoute[start];
-                }
-                BestRoute.push_back(OrigStart[0]);
-                
-                break;
-            }
             
             CurrStart.push_back(OrigStart[0]);
             CurrStart.push_back(start);
             hops = toint.Toint(graph.find(CurrStart)->second);
             CurrStart.clear();
-            queue.erase(queue.begin());
+            if(queue.size() == 0){
+                break;
+            }
+            else{
+                queue.erase(queue.begin());
+            }
+        
         }
         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
         for (i = 2; i < BestRoute.size() + 1; i++) {
@@ -288,8 +303,7 @@ public:
         
         while (!queue.empty()) {
             if (queue[0][1] == destination) {
-                cout << "Destination has arrived"<< endl;
-                break;
+                tmp = nextp[toint.Toint(queue[0][2])];
             }
             it = tree.find(queue[0][1]);
             n = tree.count(queue[0][1]);
@@ -304,9 +318,7 @@ public:
                         
                     }
                     else{
-                 
                         nextp[i].parent = &nextp[toint.Toint(queue[0][2])];
-
                     }
                     nextp[i].h = Distance[it->second];
                     nextp[i].g = to_string(toint.Toint(graph[Currstart]) + toint.Toint(nextp[i].parent->g));
@@ -332,7 +344,7 @@ public:
             
         }
         Currstart.clear();
-        tmp = nextp[toint.Toint(queue[0][2])];
+
         queue.clear();
 
         while (tmp.parent) {

@@ -40,9 +40,13 @@ int main(int argc, const char * argv[]) {
     string il;
     string cost;
     vector<string> place;
+    string Numroute;
+    int Numberoute;
+    int i = 0;
     SearchTree Dsearch = *new SearchTree();
     ifstream iinfo;
     info Info = *new info();
+    string2int toint = *new string2int();
     
     iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input1.txt");
     if (! iinfo.is_open())
@@ -79,10 +83,7 @@ int main(int argc, const char * argv[]) {
         if (a == '\n') {
             break;
         }
-        else{
-            string Numroute;
-            Numroute.push_back(a);
-        }
+        
     }
     //////////////////////////////////////////////////////////
     //     Read the Begin Point and the Desination  <End>   //
@@ -94,7 +95,7 @@ int main(int argc, const char * argv[]) {
     //////////////////////////////////////////////////////////
     int flag = 0;
     
-    while (!iinfo.eof() && flag != 4)
+    while (!iinfo.eof() && i != 23)
     {
         
         char a = iinfo.get();
@@ -111,7 +112,6 @@ int main(int argc, const char * argv[]) {
             if (place.size() == 2) {
                 Dsearch.graph[place] = cost;
                 Dsearch.tree.insert(pair<string, string>(place[0],place[1]));
-                Dsearch.tree.insert(pair<string, string>(place[1],place[0]));
                 place.push_back(place[0]);
                 place.erase(place.begin());
                 if (!Dsearch.graph.count(place)) {
@@ -121,13 +121,8 @@ int main(int argc, const char * argv[]) {
                 place.clear();
                 cost.clear();
                 flag = 0;
+                i++;
             }
-            else if (place.size() == 0){
-                flag = 4;
-                il.clear();
-                //Erase the number of route on Sunday. I may come back one day I know where this can be used.
-            }
-            
         }
         else if (a == ' ' && flag != 2){
             if (il.size() ) {
@@ -152,8 +147,20 @@ int main(int argc, const char * argv[]) {
     //      Read the intersection information  <End>        //
     //////////////////////////////////////////////////////////
     flag = 0;
+    while (!iinfo.eof()) {
+        char a = iinfo.get();
+        if (a == '\n') {
+            break;
+        }
+        else{
+            
+            Numroute.push_back(a);
+        }
+        
+    }
+    Numberoute = toint.Toint(Numroute);
     
-    while (!iinfo.eof())
+    for (i = 0; i < Numberoute; i++)
     {
         
         char a = iinfo.get();
@@ -211,17 +218,6 @@ int main(int argc, const char * argv[]) {
     }
     else if (buffer[0] == 'A'){
         cout << "result for A* Search:" << endl;
-        int i = 0;
-        map<string,string> ::iterator it1 = Dsearch.Distance.begin();
-
-        while (i < Dsearch.Distance.size() ) {
-            cout << it1->first[0] << " " ;
-            cout << it1->first[1] << " " ;
-            cout << it1->second << endl;
-            it1++;
-            i++;
-        }
-        
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
         Dsearch.Asearch(Info.beginpoi, Info.desti);
