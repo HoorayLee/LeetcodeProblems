@@ -47,7 +47,6 @@ public:
         NextPoi = it -> second;
         visited[v] = 1;
         ofile<<v.c_str() << " " << hops <<endl;
-        cout<<v.c_str() << " " << hops <<endl;
         hops++;
         if (v ==  desti) {
             exit(0);
@@ -136,7 +135,7 @@ public:
         if (NextPoi == destination) {
             BestRoute->clear();
             BestRoute->push_back(NextPoi);
-            cout << "Destination has arrived" << endl;
+//            cout << "Destination has arrived" << endl;
             while (LastRoute[NextPoi] != OrigStart[0]) {
                 BestRoute->push_back(LastRoute[NextPoi]);
                 NextPoi = LastRoute[NextPoi];
@@ -177,7 +176,6 @@ public:
         string2int toint = *new string2int();
         
         visited[start] = 1;
-        //ofile << start.c_str() << " " << hops << endl;
         OrigStart.push_back(start);
         BestRoute.push_back(destination);
         
@@ -226,7 +224,7 @@ public:
                         if(toint.Toint(graph.find(OrigStart)->second)  > (hops + toint.Toint(graph.find(CurrStart)->second) )){
                             graph.find(OrigStart)->second = to_string(hops + toint.Toint(graph.find(CurrStart)->second) );
                             LastRoute[NextPoi] = start;
-                            printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
+//                            printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
                             if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                                 ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                                 OrigStart.pop_back();
@@ -245,7 +243,7 @@ public:
                 if (graph.count(OrigStart) == 0 && OrigStart.size() == 2 && OrigStart[0] != OrigStart[1])  {
                     graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(graph.find(CurrStart)->second))));
                     LastRoute[NextPoi] = start;
-                    printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
+//                    printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
@@ -387,7 +385,6 @@ public:
         while (queue.size()) {
             int dis = toint.Toint(queue[queue.size() - 1][1])-toint.Toint(Distance[queue[queue.size() - 1][0]]);
             ofile << queue[queue.size() - 1][0] << " " << dis << endl;
-            cout << queue[queue.size() - 1][0] << " " << dis << endl;
             queue.pop_back();
         }
         
