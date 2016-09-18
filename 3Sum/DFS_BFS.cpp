@@ -28,7 +28,13 @@ public:
     void dfs(string v, string desti)
     {
         ofstream ofile;
-        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        if(hops == 0){
+            ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        }
+        else{
+            ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::app);
+        }
+        
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -41,7 +47,11 @@ public:
         NextPoi = it -> second;
         visited[v] = 1;
         ofile<<v.c_str() << " " << hops <<endl;
+        cout<<v.c_str() << " " << hops <<endl;
         hops++;
+        if (v ==  desti) {
+            exit(0);
+        }
 
         n = tree.count(NextPoi);
         for (i = 0; i < n; i++) {
@@ -49,10 +59,6 @@ public:
             it++;
         }
         i = 0;
-        if (NextPoi ==  desti) {
-            ofile << NextPoi.c_str() << " " << hops << endl;
-            exit(0);
-        }
         sort(sorted.begin(),sorted.end());
         if (n > 0) {
             for (; i < n; i++) {
@@ -126,7 +132,7 @@ public:
         }
     }
     
-    void checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
+    bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
         if (NextPoi == destination) {
             BestRoute->clear();
             BestRoute->push_back(NextPoi);
@@ -136,7 +142,9 @@ public:
                 NextPoi = LastRoute[NextPoi];
             }
             BestRoute->push_back(OrigStart[0]);
+            return true;
         }
+        return false;
     }
     
     void UniformSearch(string start, string destination){
@@ -147,7 +155,7 @@ public:
         
         
         int i = 0;
-        int i1 = 0;
+        int step = 0;
         int flag = 0;
         
         vector<string> OrigStart;
@@ -182,7 +190,7 @@ public:
             if (n < 3) {
                 flag = 0;
             }
-            
+            step++;
             for (i = 0; i < n ; i++){
                 NextPoi = it1 -> second;
                 
@@ -193,18 +201,22 @@ public:
                 if (!visited.count(NextPoi))
                 {
                     
-                    route.push_back(it1->first);
-                    route.push_back(it1->second);
-                    it = graph.find(route);
-                    test.push_back(it->second);
-                    test.push_back(it->first[1]);
-                    
-                    queue.push_back(test);
+        
                     OrigStart.push_back(NextPoi);
-                    test.clear();
+                    CurrStart.push_back(NextPoi);
+                    
                     LastRoute[NextPoi] = start;
                     visited[NextPoi] = true;
-                    checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
+                    if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)&&graph.count(OrigStart) ){
+                        ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
+                        OrigStart.pop_back();
+                        for (i = 2; i < BestRoute.size() + 1; i++) {
+                            OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
+                            ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                            OrigStart.pop_back();
+                        }
+                    }
+
                 }
 
                 else if (visited.count(NextPoi) && NextPoi != OrigStart[0]){
@@ -213,15 +225,17 @@ public:
                     if (graph.count(CurrStart)) {
                         if(toint.Toint(graph.find(OrigStart)->second)  > (hops + toint.Toint(graph.find(CurrStart)->second) )){
                             graph.find(OrigStart)->second = to_string(hops + toint.Toint(graph.find(CurrStart)->second) );
-                            for ( ;i1 < queue.size(); i1++) {
-                                if (queue[i1][1] == CurrStart[1]) {
-                                    queue[i1][0] = graph.find(OrigStart)->second;
-                                }
-                            }
-                            i1 = 0;
                             LastRoute[NextPoi] = start;
                             printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
-                            checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
+                            if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
+                                ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
+                                OrigStart.pop_back();
+                                for (i = 2; i < BestRoute.size() + 1; i++) {
+                                    OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
+                                    ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                                    OrigStart.pop_back();
+                                }
+                            }
                             
 
                         }
@@ -229,13 +243,33 @@ public:
                 }
 
                 if (graph.count(OrigStart) == 0 && OrigStart.size() == 2 && OrigStart[0] != OrigStart[1])  {
-                    graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(it -> second)) ));
+                    graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(graph.find(CurrStart)->second))));
                     LastRoute[NextPoi] = start;
-                    printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(it -> second));
-                    checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart);
+                    printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
+                    if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
+                        ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
+                        OrigStart.pop_back();
+                        for (i = 2; i < BestRoute.size() + 1; i++) {
+                            OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
+                            ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                            OrigStart.pop_back();
+                        }
+                    
 
                     }
                     
+                }
+                if(OrigStart.size() > 1 && visited[OrigStart[1]] != 2){
+                    it = graph.find(OrigStart);
+                    test.push_back(it->second);
+                    test.push_back(to_string(step));
+                    test.push_back(it->first[1]);
+                    queue.push_back(test);
+                    test.clear();
+                    visited[OrigStart[1]]++;
+                }
+                
+                
                 if (OrigStart.size() == 2) {
                     OrigStart.pop_back();
                 }
@@ -243,11 +277,10 @@ public:
                 
 
                 route.clear();
-                //it++;
                 it1++;
             }
             sort(queue.begin(), queue.end());
-            start = queue[0][1];
+            start = queue[0][2];
             
             CurrStart.push_back(OrigStart[0]);
             CurrStart.push_back(start);
@@ -260,12 +293,6 @@ public:
                 queue.erase(queue.begin());
             }
         
-        }
-        ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
-        for (i = 2; i < BestRoute.size() + 1; i++) {
-             OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
-             ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
-             OrigStart.pop_back();
         }
        
     }
@@ -303,7 +330,7 @@ public:
         
         while (!queue.empty()) {
             if (queue[0][1] == destination) {
-                tmp = nextp[toint.Toint(queue[0][2])];
+                break;
             }
             it = tree.find(queue[0][1]);
             n = tree.count(queue[0][1]);
@@ -344,7 +371,7 @@ public:
             
         }
         Currstart.clear();
-
+        tmp = nextp[toint.Toint(queue[0][2])];
         queue.clear();
 
         while (tmp.parent) {

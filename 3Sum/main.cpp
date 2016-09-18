@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     info Info = *new info();
     string2int toint = *new string2int();
     
-    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input1.txt");
+    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input2.txt");
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     
@@ -83,8 +83,14 @@ int main(int argc, const char * argv[]) {
         if (a == '\n') {
             break;
         }
+        else{
+            
+            Numroute.push_back(a);
+        }
         
     }
+    Numberoute = toint.Toint(Numroute);
+    
     //////////////////////////////////////////////////////////
     //     Read the Begin Point and the Desination  <End>   //
     //////////////////////////////////////////////////////////
@@ -95,7 +101,7 @@ int main(int argc, const char * argv[]) {
     //////////////////////////////////////////////////////////
     int flag = 0;
     
-    while (!iinfo.eof() && i != 23)
+    while (!iinfo.eof() && i != Numberoute)
     {
         
         char a = iinfo.get();
@@ -147,6 +153,7 @@ int main(int argc, const char * argv[]) {
     //      Read the intersection information  <End>        //
     //////////////////////////////////////////////////////////
     flag = 0;
+    Numroute.clear();
     while (!iinfo.eof()) {
         char a = iinfo.get();
         if (a == '\n') {

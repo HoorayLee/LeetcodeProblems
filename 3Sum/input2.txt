@@ -1,10 +1,16 @@
 UCS
 A
-D
-4
-A D 3
-4
+H
+6
+A B 2
+B D 3
+A C 3
+C E 2
+E H 2
+D H 2
+5
 A 4
-B 2
-C 1
-D 0
+B 3
+C 2
+D 1
+E 0
