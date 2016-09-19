@@ -1,13 +1,14 @@
 UCS
 A
-H
-6
+G
+7
+A G 5
 A B 2
-B D 3
 A C 3
-C E 2
-E H 2
-D H 2
+C D 2
+B E 3
+D G 1
+E G 1 
 5
 A 4
 B 3

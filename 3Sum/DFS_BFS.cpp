@@ -15,7 +15,9 @@
 #include "String2Int.cpp"
 using namespace std;
 
+
 class SearchTree{
+
 public:
     int n;
     int hops = 0;
@@ -24,8 +26,18 @@ public:
     map<string, int> visited;
     map<string, string> Distance;
     
+    static bool mysort(vector<string> & m1, vector<string> & m2) {
+        string2int toint = *new string2int();
+        int a,b;
+        a = toint.Toint(m1[0]);
+        b = toint.Toint(m2[0]);
+        return a < b;
+        
+    }
+
     
-    void dfs(string v, string desti)
+    
+    int dfs(string v, string desti)
     {
         ofstream ofile;
         if(hops == 0){
@@ -44,30 +56,36 @@ public:
         multimap<string,string>::iterator it;
         vector<string> sorted;
         it = tree.find(v);
-        NextPoi = it -> second;
         visited[v] = 1;
         ofile<<v.c_str() << " " << hops <<endl;
         hops++;
-        if (v ==  desti) {
-            exit(0);
-        }
+//        if (v ==  desti) {
+//            exit(0);
+//        }
 
-        n = tree.count(NextPoi);
+        n = tree.count(v);
         for (i = 0; i < n; i++) {
             sorted.push_back(it->second);
+            if (it->second ==  desti) {
+                ofile<<it->second.c_str() << " " << hops <<endl;
+                exit(0);
+            }
             it++;
         }
         i = 0;
         sort(sorted.begin(),sorted.end());
         if (n > 0) {
-            for (; i < n; i++) {
+            while(i < sorted.size()) {
                 NextPoi = sorted[i];
                 if (!visited.count(NextPoi)){
                         dfs(NextPoi,desti);
                     }
-                it++;
+                i++;
             }
         }
+        
+            return 1;
+        
         
     }
 
@@ -208,9 +226,9 @@ public:
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)&&graph.count(OrigStart) ){
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
-                        for (i = 2; i < BestRoute.size() + 1; i++) {
-                            OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
-                            ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                        for (int k = 2; k < BestRoute.size() + 1; k++) {
+                            OrigStart.push_back(BestRoute[BestRoute.size() - k]) ;
+                            ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                             OrigStart.pop_back();
                         }
                     }
@@ -224,13 +242,12 @@ public:
                         if(toint.Toint(graph.find(OrigStart)->second)  > (hops + toint.Toint(graph.find(CurrStart)->second) )){
                             graph.find(OrigStart)->second = to_string(hops + toint.Toint(graph.find(CurrStart)->second) );
                             LastRoute[NextPoi] = start;
-//                            printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
                             if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                                 ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                                 OrigStart.pop_back();
-                                for (i = 2; i < BestRoute.size() + 1; i++) {
-                                    OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
-                                    ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                                for (int k = 2; k < BestRoute.size() + 1; k++) {
+                                    OrigStart.push_back(BestRoute[BestRoute.size() - k]) ;
+                                    ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                                     OrigStart.pop_back();
                                 }
                             }
@@ -243,13 +260,12 @@ public:
                 if (graph.count(OrigStart) == 0 && OrigStart.size() == 2 && OrigStart[0] != OrigStart[1])  {
                     graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(graph.find(CurrStart)->second))));
                     LastRoute[NextPoi] = start;
-//                    printf("%s to %s has been updated to \t%d\n", OrigStart[0].c_str(), NextPoi.c_str(), hops + toint.Toint(graph.find(CurrStart)->second));
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
-                        for (i = 2; i < BestRoute.size() + 1; i++) {
-                            OrigStart.push_back(BestRoute[BestRoute.size() - i]) ;
-                            ofile << BestRoute[BestRoute.size() - i] << " " <<graph.find(OrigStart)->second << endl;
+                        for (int k = 2; k < BestRoute.size() + 1; k++) {
+                            OrigStart.push_back(BestRoute[BestRoute.size() - k]) ;
+                            ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                             OrigStart.pop_back();
                         }
                     
@@ -277,7 +293,7 @@ public:
                 route.clear();
                 it1++;
             }
-            sort(queue.begin(), queue.end());
+            sort(queue.begin(), queue.end(),this->mysort);
             start = queue[0][2];
             
             CurrStart.push_back(OrigStart[0]);
@@ -365,7 +381,7 @@ public:
 
             }
             queue.erase(queue.begin());
-            sort(queue.begin(), queue.end());
+            sort(queue.begin(), queue.end(), mysort );
             
         }
         Currstart.clear();
