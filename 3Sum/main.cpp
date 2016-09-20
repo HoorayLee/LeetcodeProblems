@@ -47,7 +47,7 @@ int main(int argc, const char * argv[]) {
     info Info = *new info();
     string2int toint = *new string2int();
     
-    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input.txt");
+    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input2.txt");
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     

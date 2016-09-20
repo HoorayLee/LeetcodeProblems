@@ -34,7 +34,15 @@ public:
         return a < b;
         
     }
-
+    struct Node{
+        Node *parent;
+        int hops;
+        int poi;
+        string f,g,h;
+        string name;
+    };
+    
+    Node node[100];
     
     
     int dfs(string v, string desti)
@@ -50,24 +58,45 @@ public:
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
-        
+        node[hops].name = v;
+        if(node[hops].parent){
+            node[hops].hops = node[hops].parent->hops + 1;
+        }
+        else{
+            node[hops].hops = 0;
+        }
         int i = 0;
         string NextPoi;
         multimap<string,string>::iterator it;
         vector<string> sorted;
         it = tree.find(v);
         visited[v] = 1;
-        ofile<<v.c_str() << " " << hops <<endl;
-        hops++;
-//        if (v ==  desti) {
-//            exit(0);
-//        }
-
+       
         n = tree.count(v);
+        if (n == 0){
+            ofile.clear();
+        }
         for (i = 0; i < n; i++) {
             sorted.push_back(it->second);
             if (it->second ==  desti) {
-                ofile<<it->second.c_str() << " " << hops <<endl;
+                int k = 1;
+                int q[100];
+                string sub[100];
+                sub[0] = it -> second;
+                q[0] = node[hops].hops + 1;
+                while (node[hops].parent) {
+                    sub[k] = node[hops].name;
+                    q[k] = node[hops].hops;
+                    node[hops] = *node[hops].parent;
+                    k++;
+                }
+                k--;
+                ofile << node[0].name << " " << node[0].hops <<endl;
+                while (k >= 0) {
+                    ofile << sub[k] << " " << q[k]<<endl;
+                    k--;
+
+                }
                 exit(0);
             }
             it++;
@@ -75,7 +104,11 @@ public:
         i = 0;
         sort(sorted.begin(),sorted.end());
         if (n > 0) {
+            int a = hops;
+            
             while(i < sorted.size()) {
+                hops++;
+                node[hops].parent = &node[a];
                 NextPoi = sorted[i];
                 if (!visited.count(NextPoi)){
                         dfs(NextPoi,desti);
@@ -91,69 +124,74 @@ public:
 
     void bfs(string v, string desti)
     {
+        hops = 0;
+        int k = 1;
         ofstream ofile;
         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
-        
         int i = 0;
-        string NextPoi;
+        Node newhead;
         multimap<string,string>::iterator it;
         it = tree.find(v);
-        vector<string> sorted;
+        vector<Node> sorted;
         visited[v] = 1;
-        int flag = 0;
-        ofile<<v.c_str() << " " << hops <<endl;
+        node[0].name = v.c_str();
+        node[0].hops = hops;
+        node[0].poi = 0;
         hops++;
-        queue<string> t;
-        t.push(v);
-        while (!t.empty())
+        sorted.push_back(node[0]);
+        while (!sorted.empty())
         {
-            sorted.clear();
-            v = t.front();
-            t.pop();
-            it = tree.find(v);
-            n = tree.count(v);
-            for (i = 0; i < n; i++) {
-                sorted.push_back(it->second);
-                it++;
-            }
-            i = 0;
-            it = tree.find(v);
-            sort(sorted.begin(),sorted.end());
-            
 
-            for (i = 0; i < n ; i++){
-                 NextPoi = sorted[i];
-                if(NextPoi == desti){
-                    ofile << NextPoi.c_str() << " " << hops << endl;
+            newhead = sorted[0];
+            sorted.erase(sorted.begin());
+            it = tree.find(newhead.name);
+            n = tree.count(newhead.name);
+            for (i = 0; i < n; i++) {
+                node[k].poi = k;
+                node[k].name = it->second;
+                node[k].hops = node[newhead.poi].hops + 1;
+                node[k].parent = &node[newhead.poi];
+                if(it->second == desti){
+                    int m = 0;
+                    int q[100];
+                    string sub[100];
+                    while (node[k].parent) {
+                        sub[m] = node[k].name;
+                        q[m] = node[k].hops;
+                        node[k] = *node[k].parent;
+                        m++;
+                    }
+                    m--;
+                    ofile << node[0].name << " " << node[0].hops <<endl;
+                    while (m >= 0) {
+                        ofile << sub[m] << " " << q[m]<<endl;
+                        m--;
+                        
+                    }
                     exit(0);
                 }
-
-                if (!visited.count(NextPoi))
+                if (!visited.count(it->second))
                 {
-                    ofile << NextPoi.c_str() << " " << hops << endl;
-                    t.push(NextPoi);
-                    visited[NextPoi] = true;
-                    flag++;
+                    sorted.push_back(node[k]);
+                    visited[it->second] = true;
                 }
+                k++;
                 it++;
             }
-            if (flag) {
-                hops++;
-                flag = 0;
-            }
-            
+            sort(sorted.begin(),sorted.end(),[](const Node &m1,const Node &m2){return m1.name[0] < m2.name[0];});
 
         }
+        
+        ofile.close();
     }
     
     bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
         if (NextPoi == destination) {
             BestRoute->clear();
             BestRoute->push_back(NextPoi);
-//            cout << "Destination has arrived" << endl;
             while (LastRoute[NextPoi] != OrigStart[0]) {
                 BestRoute->push_back(LastRoute[NextPoi]);
                 NextPoi = LastRoute[NextPoi];
@@ -311,11 +349,6 @@ public:
        
     }
     
-    struct Node{
-        Node *parent;
-        string f,g,h;
-        string name;
-    };
     
     void Asearch(string start, string destination){
         ofstream ofile;

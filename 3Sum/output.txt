@@ -1,3 +1,5 @@
-Mary/10 0
-Jeniffer 4
-Zera 9
+A 0
+B 1
+D 2
+E 3
+H 4
