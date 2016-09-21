@@ -26,6 +26,20 @@ public:
     map<string, int> visited;
     map<string, string> Distance;
     
+    bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
+        if (NextPoi == destination) {
+            BestRoute->clear();
+            BestRoute->push_back(NextPoi);
+            while (LastRoute[NextPoi] != OrigStart[0]) {
+                BestRoute->push_back(LastRoute[NextPoi]);
+                NextPoi = LastRoute[NextPoi];
+            }
+            BestRoute->push_back(OrigStart[0]);
+            return true;
+        }
+        return false;
+    }
+    
     static bool mysort(vector<string> & m1, vector<string> & m2) {
         string2int toint = *new string2int();
         int a,b;
@@ -187,26 +201,13 @@ public:
         
         ofile.close();
     }
-    
-    bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
-        if (NextPoi == destination) {
-            BestRoute->clear();
-            BestRoute->push_back(NextPoi);
-            while (LastRoute[NextPoi] != OrigStart[0]) {
-                BestRoute->push_back(LastRoute[NextPoi]);
-                NextPoi = LastRoute[NextPoi];
-            }
-            BestRoute->push_back(OrigStart[0]);
-            return true;
-        }
-        return false;
-    }
+
     
     void UniformSearch(string start, string destination){
         ofstream ofile;
-        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
-        if (! ofile.is_open())
-        { cout << "Error opening file"; exit (1); }
+       // ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+//        if (! ofile.is_open())
+//        { cout << "Error opening file"; exit (1); }
         
         
         int i = 0;
@@ -262,6 +263,7 @@ public:
                     LastRoute[NextPoi] = start;
                     visited[NextPoi] = true;
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)&&graph.count(OrigStart) ){
+                        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
                         for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -269,6 +271,7 @@ public:
                             ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                             OrigStart.pop_back();
                         }
+                        ofile.close();
                     }
 
                 }
@@ -281,6 +284,7 @@ public:
                             graph.find(OrigStart)->second = to_string(hops + toint.Toint(graph.find(CurrStart)->second) );
                             LastRoute[NextPoi] = start;
                             if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
+                                ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
                                 ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                                 OrigStart.pop_back();
                                 for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -288,6 +292,7 @@ public:
                                     ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                                     OrigStart.pop_back();
                                 }
+                                ofile.close();
                             }
                             
 
@@ -299,6 +304,7 @@ public:
                     graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(graph.find(CurrStart)->second))));
                     LastRoute[NextPoi] = start;
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
+                        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
                         for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -306,7 +312,7 @@ public:
                             ofile << BestRoute[BestRoute.size() - k] << " " <<graph.find(OrigStart)->second << endl;
                             OrigStart.pop_back();
                         }
-                    
+                    ofile.close();
 
                     }
                     

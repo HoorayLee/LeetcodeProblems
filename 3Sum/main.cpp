@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     info Info = *new info();
     string2int toint = *new string2int();
     
-    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input2.txt");
+    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input.txt");
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     
@@ -116,13 +116,17 @@ int main(int argc, const char * argv[]) {
 
         else if (a == '\n') {
             if (place.size() == 2) {
-                Dsearch.graph[place] = cost;
                 Dsearch.tree.insert(pair<string, string>(place[0],place[1]));
+                Dsearch.tree.insert(pair<string, string>(place[1],place[0]));
+                Dsearch.graph[place] = cost;
+
                 place.push_back(place[0]);
                 place.erase(place.begin());
                 if (!Dsearch.graph.count(place)) {
                     Dsearch.graph[place] =  cost;
+                    
                 }
+
                 il.clear();
                 place.clear();
                 cost.clear();
