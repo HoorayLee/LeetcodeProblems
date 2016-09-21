@@ -19,13 +19,13 @@ using namespace std;
 class SearchTree{
 
 public:
-    int n;
+    unsigned long n;
     int hops = 0;
     multimap<string, string> tree;
     map<vector<string>, string> graph;
     map<string, int> visited;
     map<string, string> Distance;
-    
+
     bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
         if (NextPoi == destination) {
             BestRoute->clear();
@@ -45,6 +45,11 @@ public:
         int a,b;
         a = toint.Toint(m1[0]);
         b = toint.Toint(m2[0]);
+        if (a == b){
+            a = toint.Toint(m1[1]);
+            b = toint.Toint(m2[1]);
+            return m1[1] < m2[1];
+        }
         return a < b;
         
     }
@@ -56,7 +61,7 @@ public:
         string name;
     };
     
-    Node node[100];
+    Node node[1000];
     
     
     int dfs(string v, string desti)
@@ -111,7 +116,8 @@ public:
                     k--;
 
                 }
-                exit(0);
+                
+                return 0;
             }
             it++;
         }
@@ -130,14 +136,15 @@ public:
                 i++;
             }
         }
-        
+
             return 1;
         
         
     }
 
-    void bfs(string v, string desti)
+    int bfs(string v, string desti)
     {
+        visited.clear();
         hops = 0;
         int k = 1;
         ofstream ofile;
@@ -168,6 +175,7 @@ public:
                 node[k].name = it->second;
                 node[k].hops = node[newhead.poi].hops + 1;
                 node[k].parent = &node[newhead.poi];
+                string Nextpoi = it->second;
                 if(it->second == desti){
                     int m = 0;
                     int q[100];
@@ -185,7 +193,7 @@ public:
                         m--;
                         
                     }
-                    exit(0);
+                    return 0;;
                 }
                 if (!visited.count(it->second))
                 {
@@ -195,20 +203,20 @@ public:
                 k++;
                 it++;
             }
-            sort(sorted.begin(),sorted.end(),[](const Node &m1,const Node &m2){return m1.name[0] < m2.name[0];});
+//            sort(sorted.begin(),sorted.end(),[](const Node &m1,const Node &m2){return m1.name[0] < m2.name[0];});
 
         }
         
         ofile.close();
+        
+        return 0;
     }
 
     
     void UniformSearch(string start, string destination){
         ofstream ofile;
-       // ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
-//        if (! ofile.is_open())
-//        { cout << "Error opening file"; exit (1); }
-        
+        visited.clear();
+        hops = 0;
         
         int i = 0;
         int step = 0;
@@ -238,6 +246,7 @@ public:
         
         while (!queue.empty() || flag == 0)
         {
+            int change = 0;
             flag ++;
             it1 = tree.find(start);
             n = tree.count(start);
@@ -259,10 +268,12 @@ public:
         
                     OrigStart.push_back(NextPoi);
                     CurrStart.push_back(NextPoi);
-                    
+                   
                     LastRoute[NextPoi] = start;
                     visited[NextPoi] = true;
+                    
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)&&graph.count(OrigStart) ){
+                        
                         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
@@ -279,9 +290,11 @@ public:
                 else if (visited.count(NextPoi) && NextPoi != OrigStart[0]){
                     OrigStart.push_back(NextPoi);
                     CurrStart.push_back(NextPoi);
-                    if (graph.count(CurrStart)) {
+                    
                         if(toint.Toint(graph.find(OrigStart)->second)  > (hops + toint.Toint(graph.find(CurrStart)->second) )){
-                            graph.find(OrigStart)->second = to_string(hops + toint.Toint(graph.find(CurrStart)->second) );
+                            change = 1;
+                            
+                            graph[OrigStart] = to_string(hops + toint.Toint(graph[CurrStart]));
                             LastRoute[NextPoi] = start;
                             if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                                 ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
@@ -294,14 +307,13 @@ public:
                                 }
                                 ofile.close();
                             }
-                            
 
                         }
-                    }
                 }
 
                 if (graph.count(OrigStart) == 0 && OrigStart.size() == 2 && OrigStart[0] != OrigStart[1])  {
-                    graph.insert(pair<vector<string>, string>(OrigStart,to_string(hops + toint.Toint(graph.find(CurrStart)->second))));
+                    graph[OrigStart] = to_string(hops + toint.Toint(graph[CurrStart]));
+                    change = 1;
                     LastRoute[NextPoi] = start;
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
                         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
@@ -317,14 +329,18 @@ public:
                     }
                     
                 }
-                if(OrigStart.size() > 1 && visited[OrigStart[1]] != 2){
-                    it = graph.find(OrigStart);
-                    test.push_back(it->second);
-                    test.push_back(to_string(step));
-                    test.push_back(it->first[1]);
-                    queue.push_back(test);
-                    test.clear();
-                    visited[OrigStart[1]]++;
+                if(OrigStart.size() > 1 ){
+                    if (visited[OrigStart[1]] == 1 || change == 1) {
+                        it = graph.find(OrigStart);
+                        test.push_back(it->second);
+                        test.push_back(to_string(step));
+                        test.push_back(it->first[1]);
+                        queue.push_back(test);
+                        test.clear();
+                        visited[OrigStart[1]]++;
+                        change = 0;
+                    }
+                    
                 }
                 
                 
@@ -338,16 +354,17 @@ public:
                 it1++;
             }
             sort(queue.begin(), queue.end(),this->mysort);
-            start = queue[0][2];
             
-            CurrStart.push_back(OrigStart[0]);
-            CurrStart.push_back(start);
-            hops = toint.Toint(graph.find(CurrStart)->second);
-            CurrStart.clear();
+            
             if(queue.size() == 0){
                 break;
             }
             else{
+                //OrigStart.push_back(OrigStart[0]);
+                start = queue[0][2];
+                OrigStart.push_back(start);
+                hops = toint.Toint(graph.find(OrigStart)->second);
+                OrigStart.pop_back();
                 queue.erase(queue.begin());
             }
         
@@ -357,6 +374,7 @@ public:
     
     
     void Asearch(string start, string destination){
+        visited.clear();
         ofstream ofile;
         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
         if (! ofile.is_open())
@@ -365,7 +383,7 @@ public:
         
         string2int toint = *new string2int();
         vector<string> Currstart;
-        int n = 0, i;
+        unsigned long n = 0, i;
         Node startnode, nextp[1000] ,tmp;
         startnode.g = "0";
         startnode.h = Distance[start];

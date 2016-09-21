@@ -47,8 +47,8 @@ int main(int argc, const char * argv[]) {
     ofstream ofile;
     info Info = *new info();
     string2int toint = *new string2int();
-    
-    iinfo.open("/Users/kouruiri/Documents/3Sum/3Sum/input.txt");
+    string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/input2.txt";
+    iinfo.open(filepath);
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
     
@@ -117,15 +117,15 @@ int main(int argc, const char * argv[]) {
         else if (a == '\n') {
             if (place.size() == 2) {
                 Dsearch.tree.insert(pair<string, string>(place[0],place[1]));
-                Dsearch.tree.insert(pair<string, string>(place[1],place[0]));
+                //Dsearch.tree.insert(pair<string, string>(place[1],place[0]));
                 Dsearch.graph[place] = cost;
 
                 place.push_back(place[0]);
                 place.erase(place.begin());
-                if (!Dsearch.graph.count(place)) {
-                    Dsearch.graph[place] =  cost;
-                    
-                }
+//                if (!Dsearch.graph.count(place)) {
+//                    Dsearch.graph[place] =  cost;
+//                    
+//                }
 
                 il.clear();
                 place.clear();
@@ -198,6 +198,7 @@ int main(int argc, const char * argv[]) {
         }
         
     }
+        Numroute.clear();
 
     if (il.size()) {
         Dsearch.Distance[il] = cost;
@@ -208,7 +209,7 @@ int main(int argc, const char * argv[]) {
     }
     iinfo.close();
     if (Info.beginpoi == Info.desti) {
-        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output2.txt");
         ofile << Info.desti << " 0" << endl;
         ofile.close();
         exit(0);
@@ -239,7 +240,9 @@ int main(int argc, const char * argv[]) {
         cout << "To" << Info.desti << endl;
         Dsearch.Asearch(Info.beginpoi, Info.desti);
     }
-
+        Info.beginpoi.clear();
+        Info.desti.clear();
+    
     
     return 0;
     

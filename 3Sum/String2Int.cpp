@@ -13,10 +13,10 @@ class string2int{
 public:
     int Toint(string a){
         int num = 0;
-        int k = a.length();
+        double k = a.length();
         int i = 0;
         while (a[i] != '\0') {
-            num += (a[i] - 48) * pow(10,a.length() - i - 1);
+            num += (a[i] - 48) * pow(10,k - i - 1);
             i++;
         }
         
