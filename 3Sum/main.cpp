@@ -44,6 +44,7 @@ int main(int argc, const char * argv[]) {
     int i = 0;
     SearchTree Dsearch = *new SearchTree();
     ifstream iinfo;
+    ofstream ofile;
     info Info = *new info();
     string2int toint = *new string2int();
     
@@ -200,6 +201,13 @@ int main(int argc, const char * argv[]) {
         place.clear();
         cost.clear();
         
+    }
+    iinfo.close();
+    if (Info.beginpoi == Info.desti) {
+        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        ofile << Info.desti << " 0" << endl;
+        ofile.close();
+        exit(0);
     }
 
     

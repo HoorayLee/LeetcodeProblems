@@ -1,6 +1,6 @@
-BFS
+A*
 A
-H
+A
 7
 A B 1
 A C 1

@@ -1,4 +1,4 @@
-UCS
+A*
 Mary/10
 Zera
 23
