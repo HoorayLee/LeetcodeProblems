@@ -23,7 +23,7 @@ class info{
     string desti;
 };
 
-int main(int argc, const char * argv[]) {
+int mai(string filepath,int times) {
     
     //3 Sum Question
 //    Solution Solute = *new Solution();
@@ -47,7 +47,7 @@ int main(int argc, const char * argv[]) {
     ofstream ofile;
     info Info = *new info();
     string2int toint = *new string2int();
-    string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/input2.txt";
+    
     iinfo.open(filepath);
     if (! iinfo.is_open())
     { cout << "Error opening file"; exit (1); }
@@ -212,7 +212,7 @@ int main(int argc, const char * argv[]) {
         ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output2.txt");
         ofile << Info.desti << " 0" << endl;
         ofile.close();
-        exit(0);
+        return 0;
     }
 
     
@@ -220,25 +220,25 @@ int main(int argc, const char * argv[]) {
         cout << "result for dfs:" << endl;
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
-        Dsearch.dfs(Info.beginpoi,Info.desti);
+        Dsearch.dfs(Info.beginpoi,Info.desti,times);
     }
     else if(buffer[0] == 'B'){
         cout << "result for bfs:" << endl;
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
-        Dsearch.bfs(Info.beginpoi,Info.desti);
+        Dsearch.bfs(Info.beginpoi,Info.desti,times);
     }
     else if (buffer[0] == 'U'){
         cout << "result for Uniform Search:" << endl;
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
-        Dsearch.UniformSearch(Info.beginpoi,Info.desti);
+        Dsearch.UniformSearch(Info.beginpoi,Info.desti,times);
     }
     else if (buffer[0] == 'A'){
         cout << "result for A* Search:" << endl;
         cout << "From" << Info.beginpoi << endl;
         cout << "To" << Info.desti << endl;
-        Dsearch.Asearch(Info.beginpoi, Info.desti);
+        Dsearch.Asearch(Info.beginpoi, Info.desti,times);
     }
         Info.beginpoi.clear();
         Info.desti.clear();
@@ -246,4 +246,17 @@ int main(int argc, const char * argv[]) {
     
     return 0;
     
+}
+int main(){
+    
+    int a = 0;
+    for (a = 0; a < 165; a++) {
+        string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/CSCI561-master/cases/input";
+        filepath.append(to_string(a));
+        filepath.append(".txt");
+        mai(filepath,a);
+        
+    }
+    cout<<a<<endl;
+    return 0;
 }

@@ -24,6 +24,7 @@ public:
     multimap<string, string> tree;
     map<vector<string>, string> graph;
     map<string, int> visited;
+    map<string, int> seen;
     map<string, string> Distance;
 
     bool checkArrive(string NextPoi, string destination, vector<string> *BestRoute,map<string,string> LastRoute, vector<string> OrigStart){
@@ -61,17 +62,20 @@ public:
         string name;
     };
     
-    Node node[1000];
+    Node node[10000];
     
     
-    int dfs(string v, string desti)
+    int dfs(string v, string desti,int times)
     {
         ofstream ofile;
+        string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/Output/output";
+        filepath.append(to_string(times));
+        filepath.append(".txt");
         if(hops == 0){
-            ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+            ofile.open(filepath);
         }
         else{
-            ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::app);
+            ofile.open(filepath,ios::app);
         }
         
         if (! ofile.is_open())
@@ -90,14 +94,22 @@ public:
         vector<string> sorted;
         it = tree.find(v);
         visited[v] = 1;
+        seen[v] = 1;
        
         n = tree.count(v);
         if (n == 0){
             ofile.clear();
         }
         for (i = 0; i < n; i++) {
-            sorted.push_back(it->second);
-            if (it->second ==  desti) {
+            seen[it->second] += 1;
+            if(seen[it->second] > 1){
+                
+            }
+            else{
+                sorted.push_back(it->second);
+            }
+            
+            if (it->second ==  desti && seen[it->second] == 1) {
                 int k = 1;
                 int q[100];
                 string sub[100];
@@ -122,7 +134,7 @@ public:
             it++;
         }
         i = 0;
-        sort(sorted.begin(),sorted.end());
+   //     sort(sorted.begin(),sorted.end());
         if (n > 0) {
             int a = hops;
             
@@ -131,7 +143,10 @@ public:
                 node[hops].parent = &node[a];
                 NextPoi = sorted[i];
                 if (!visited.count(NextPoi)){
-                        dfs(NextPoi,desti);
+                    int k = dfs(NextPoi,desti,times);
+                    if(k == 0){
+                        return 0;
+                    }
                     }
                 i++;
             }
@@ -142,13 +157,16 @@ public:
         
     }
 
-    int bfs(string v, string desti)
+    int bfs(string v, string desti,int times)
     {
         visited.clear();
         hops = 0;
         int k = 1;
         ofstream ofile;
-        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/Output/output";
+        filepath.append(to_string(times));
+        filepath.append(".txt");
+        ofile.open(filepath);
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -193,7 +211,7 @@ public:
                         m--;
                         
                     }
-                    return 0;;
+                    return 1;
                 }
                 if (!visited.count(it->second))
                 {
@@ -209,11 +227,11 @@ public:
         
         ofile.close();
         
-        return 0;
+        return 1;
     }
 
     
-    void UniformSearch(string start, string destination){
+    void UniformSearch(string start, string destination,int times){
         ofstream ofile;
         visited.clear();
         hops = 0;
@@ -243,6 +261,9 @@ public:
         visited[start] = 1;
         OrigStart.push_back(start);
         BestRoute.push_back(destination);
+        string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/Output/output";
+        filepath.append(to_string(times));
+        filepath.append(".txt");
         
         while (!queue.empty() || flag == 0)
         {
@@ -274,7 +295,7 @@ public:
                     
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)&&graph.count(OrigStart) ){
                         
-                        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
+                        ofile.open(filepath,ios::trunc);
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
                         for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -297,7 +318,7 @@ public:
                             graph[OrigStart] = to_string(hops + toint.Toint(graph[CurrStart]));
                             LastRoute[NextPoi] = start;
                             if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
-                                ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
+                                ofile.open(filepath,ios::trunc);
                                 ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                                 OrigStart.pop_back();
                                 for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -316,7 +337,7 @@ public:
                     change = 1;
                     LastRoute[NextPoi] = start;
                     if (checkArrive(NextPoi, destination, &BestRoute, LastRoute, OrigStart)){
-                        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt",ios::trunc);
+                        ofile.open(filepath,ios::trunc);
                         ofile << BestRoute[BestRoute.size() - 1] << " " <<"0" << endl;
                         OrigStart.pop_back();
                         for (int k = 2; k < BestRoute.size() + 1; k++) {
@@ -373,10 +394,13 @@ public:
     }
     
     
-    void Asearch(string start, string destination){
+    void Asearch(string start, string destination,int times){
         visited.clear();
         ofstream ofile;
-        ofile.open("/Users/kouruiri/Documents/3Sum/3Sum/output.txt");
+        string filepath = "/Users/kouruiri/Documents/3Sum/3Sum/Output/output";
+        filepath.append(to_string(times));
+        filepath.append(".txt");
+        ofile.open(filepath);
         if (! ofile.is_open())
         { cout << "Error opening file"; exit (1); }
         
@@ -384,7 +408,8 @@ public:
         string2int toint = *new string2int();
         vector<string> Currstart;
         unsigned long n = 0, i;
-        Node startnode, nextp[1000] ,tmp;
+        Node startnode, nextp[50000],tmp;
+        memset(nextp, 0,sizeof(Node)*50000);
         startnode.g = "0";
         startnode.h = Distance[start];
         startnode.name = start;
@@ -445,12 +470,19 @@ public:
         tmp = nextp[toint.Toint(queue[0][2])];
         queue.clear();
 
-        while (tmp.parent) {
-            Currstart.push_back(tmp.name);
-            Currstart.push_back(tmp.f);
-            tmp = *tmp.parent;
-            queue.push_back(Currstart);
-            Currstart.clear();
+        while (tmp.parent != NULL) {
+            if (tree.count(tmp.parent->name) != 0){
+                Currstart.push_back(tmp.name);
+                Currstart.push_back(tmp.f);
+                
+                tmp = *tmp.parent;
+                queue.push_back(Currstart);
+                Currstart.clear();
+
+            }
+            else{
+                break;
+            }
         }
         Currstart.push_back(tmp.name);
         Currstart.push_back(tmp.f);
