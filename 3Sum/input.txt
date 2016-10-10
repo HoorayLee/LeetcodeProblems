@@ -1,7 +1,7 @@
-A*
-Mary/10
-Zera
-23
+UCS
+Coop/100
+Zera  
+23  
 Adams/105 Coop/100 2
 Adams/105 Mary/10 6
 Adams/105 Duck 3
@@ -10,17 +10,17 @@ Adams/105 Zera 4
 Mary/10 Coop/100 3
 Mary/10 Adams/105 6
 Mary/10 Jeniffer 4
-Downing Jeniffer 2
+Downing Jeniffer 3
 Downing Coop/100 4
 Downing DFA 3
-Coop/100 Adams/105 2
+Coop/100 Adams/105 4
 Coop/100 Mary/10 6
-Coop/100 Downing 4
+Coop/100 Downing 2
 DFA Downing 3
 DFA Duck 1
-DFA Adams/105 5
-Duck Adams/105 3
-Duck DFA 1
+DFA Adams/105 3
+Duck Adams/105 7
+Duck DFA 2
 Jeniffer Coop/100 7
 Jeniffer Mary/10 2
 Jeniffer Zera 5

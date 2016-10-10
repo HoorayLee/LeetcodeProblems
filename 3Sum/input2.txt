@@ -1,14 +1,13 @@
-A*
+UCS
 A
-A
-7
-A B 1
-A C 1
-B D 1
-C D 1
-D E 3
-E H 2
-C B 1
+H
+6
+A B 2
+A C 3
+C E 2
+B D 3
+D H 1
+E H 1
 5
 A 4
 B 3

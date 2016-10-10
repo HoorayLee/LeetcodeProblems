@@ -11,7 +11,6 @@ using namespace std;
 class Grid2D{
 public:
     int numIslands(vector<vector<char>>& grid) {
-        vector<vector<char>>::iterator it = grid.begin();
         int i = 0;
         int length = grid[0].size();
         int height = 0;
